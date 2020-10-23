@@ -1,4 +1,4 @@
-﻿#define DefaultBuilder
+﻿#define SyncIO
 // Define any of the following for the scenarios described in the Kestrel topic:
 // DefaultBuilder Limits TCPSocket UnixSocket FileDescriptor Port0 SyncIO
 // The following require an X.509 certificate:
@@ -15,6 +15,23 @@ namespace KestrelSample
 {
   public class Program
   {
+    public static void Main(string[] args)
+    {
+      CreateHostBuilder(args).Build().Run();
+    }
+
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                  #region snippet_SyncIO
+                  webBuilder.ConfigureKestrel(serverOptions =>
+              {
+                serverOptions.AllowSynchronousIO = true;
+              })
+                  #endregion
+                    .UseStartup<Startup>();
+            });
 #if DefaultBuilder
     #region snippet_DefaultBuilder
     public static void Main(string[] args)
@@ -157,23 +174,7 @@ namespace KestrelSample
                     .UseStartup<Startup>();
                 });
 #elif SyncIO
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-    #region snippet_SyncIO
-                    webBuilder.ConfigureKestrel(serverOptions =>
-                    {
-                        serverOptions.AllowSynchronousIO = true;
-                    })
-    #endregion
-                    .UseStartup<Startup>();
-                });
+       
 #endif
   }
 }
