@@ -21,17 +21,11 @@ namespace KestrelSample
     }
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                  #region snippet_SyncIO
-                  webBuilder.ConfigureKestrel(serverOptions =>
-              {
-                serverOptions.AllowSynchronousIO = true;
-              })
-                  #endregion
-                    .UseStartup<Startup>();
-            });
+      Host.CreateDefaultBuilder(args)
+          .ConfigureWebHostDefaults(webBuilder => 
+            webBuilder.ConfigureKestrel(serverOptions =>
+                                          serverOptions.AllowSynchronousIO = true)
+          .UseStartup<Startup>());
 #if DefaultBuilder
     #region snippet_DefaultBuilder
     public static void Main(string[] args)
